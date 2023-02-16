@@ -1,5 +1,14 @@
 server:
   port: 8000
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+  tomcat:
+    uri-encoding: UTF-8    
 
 spring:
   mvc:
@@ -10,7 +19,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://son.cqu5fhfcagzh.ap-northeast-2.rds.amazonaws.com/db_project_time_control
     username: admin
-    password: 1q2w3e4r    
+    password: 1q2w3e4r 
+       
         
 mybatis:
   mapper-locations:
