@@ -24,9 +24,10 @@ public class TodoController {
 	@PostMapping("/todo") 
 	public ResponseEntity<?> addContent(@RequestBody CreateTodoReqDto createtodoreqdto) {
 		try {
-			todoService.createTodo(createtodoreqdto);
+			if(!todoService.createTodo(createtodoreqdto)){
+				throw new RuntimeException("DB Error");  //실행중 오류는 RuntimeException으로 잡기
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			 return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "failure", createtodoreqdto));
 		}
