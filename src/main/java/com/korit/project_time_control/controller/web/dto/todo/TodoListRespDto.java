@@ -12,6 +12,7 @@ public class TodoListRespDto {
 	private String todo;
 	private boolean todoComplete;
 	private boolean importance;
+	private int total_count;
 	private LocalDateTime createDate;
 	private LocalDateTime updateDate;
 	

@@ -27,10 +27,10 @@ public class TodoController {
 	private final TodoService todoService;
 	
 	@GetMapping("/list")
-	public ResponseEntity<?> getTodoList(@RequestParam int page) {
+	public ResponseEntity<?> getTodoList(@RequestParam int page, @RequestParam int contentCount) {
 		List<TodoListRespDto> list = null;
 		try {
-			list = todoService.getTodoList(page);
+			list = todoService.getTodoList(page, contentCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, page + "page load failure", list));

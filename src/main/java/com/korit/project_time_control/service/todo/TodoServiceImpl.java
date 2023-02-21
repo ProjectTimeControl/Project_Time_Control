@@ -1,7 +1,9 @@
 package com.korit.project_time_control.service.todo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -37,9 +39,13 @@ public class TodoServiceImpl implements TodoService{
 	}
 	
 	@Override
-	public List<TodoListRespDto> getTodoList(int page) throws Exception {
+	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("index", (page - 1) * contentCount);	
+		map.put("count", contentCount);	
 		
-		List<Todo> todoList = todoRepository.getTodoListOfIndex((page - 1) * 20); //1 page 0 index 2 page 20 -> 점화식 (page-1) * 20 
+		
+		List<Todo> todoList = todoRepository.getTodoListOfIndex(map); //1 page 0 index 2 page 20 -> 점화식 (page-1) * 20 
 		List<TodoListRespDto> todoListRespDtos = new ArrayList<TodoListRespDto>(); //Entity에서 dto로 builder하기 위함
 		todoList.forEach(todo -> {
 			todoListRespDtos.add(todo.toListDto());

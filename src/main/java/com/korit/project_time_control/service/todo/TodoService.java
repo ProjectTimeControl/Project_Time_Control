@@ -9,7 +9,7 @@ public interface TodoService{
 	
 	public boolean createTodo(CreateTodoReqDto createTodoReqDto) throws Exception;
 	
-	public List<TodoListRespDto> getTodoList(int page) throws Exception;
+	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception;
 	
 	
 	
