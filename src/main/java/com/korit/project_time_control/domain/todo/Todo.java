@@ -2,6 +2,8 @@ package com.korit.project_time_control.domain.todo;
 
 import java.time.LocalDateTime;
 
+import com.korit.project_time_control.controller.web.dto.todo.TodoListRespDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +20,19 @@ public class Todo {
 	private int importance_flag;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
+	
+	public TodoListRespDto toListDto() {
+		return TodoListRespDto.builder()
+				.todoCode(todo_code)
+				.todo(todo_content)
+				.todoComplete(todo_complete == 0 ? false : true)  //todo_complete == 1 or 0
+				.importance(importance_flag == 0 ? false : true)
+				.createDate(create_date)
+				.updateDate(update_date)
+				.build();
+				
+				
+				
+	}
 	
 }

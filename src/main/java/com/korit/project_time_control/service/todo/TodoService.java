@@ -1,10 +1,16 @@
 package com.korit.project_time_control.service.todo;
 
-import com.korit.project_time_control.controller.web.dto.todo.CreateTodoReqDto;
+import java.util.List;
 
-public interface TodoService {
+import com.korit.project_time_control.controller.web.dto.todo.CreateTodoReqDto;
+import com.korit.project_time_control.controller.web.dto.todo.TodoListRespDto;
+
+public interface TodoService{
 	
 	public boolean createTodo(CreateTodoReqDto createTodoReqDto) throws Exception;
+	
+	public List<TodoListRespDto> getTodoList(int page) throws Exception;
+	
 	
 	
 	

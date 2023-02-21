@@ -17,5 +17,21 @@
 			now()
 		)	
 	</insert>
+	
+	<select id="getTodoListOfIndex" parameterType="Integer" resultType="com.korit.project_time_control.domain.todo.Todo">
+		select
+			todo_code,
+			todo_content,
+			todo_content,
+			todo_complete,
+			importance_flag,
+			create_date,
+			update_date
+		from
+		 todo_mst
+		order by
+			todo_code desc
+		limit #{index}, 20	 				
+	</select>
 </mapper>
 

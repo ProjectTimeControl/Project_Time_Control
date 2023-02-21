@@ -11,7 +11,7 @@ public class CreateTodoReqDto {
 	
 	public Todo toEntity() {
 		return Todo.builder()
-				.importance_flag(importance? 1 : 0)
+				.importance_flag(importance ? 1 : 0)
 				.todo_content(todo)
 				.build();
 				
