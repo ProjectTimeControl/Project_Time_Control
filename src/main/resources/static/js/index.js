@@ -1,5 +1,22 @@
 const selectedTypeButton = document.querySelector(".selected-type-button");
 const typeSelectBoxList = document.querySelector(".type-select-box-list");
+const typeSelectBoxListLis = typeSelectBoxList.querySelectorAll("li");
+const todoContentList = document.querySelector(".todo-content-list");
+const sectionBody = document.querySelector(".section-body");
+
+let page = 1;
+let totalpage = 0;
+
+sectionBody.onscroll = () =>{
+	let checkNum = todoContentList.clientHeight - sectionBody.offsetHeight - sectionBody.scrollTop;
+	
+	if(checkNum < 1 && checkNum >-1 && page < totalpage){
+	
+		page++;
+		load();
+	}
+}
+
 
 let listType = "all";
 
@@ -15,20 +32,51 @@ function load(){
 		type: "get",
 		url: `/api/v1/todolist/list/${listType}`,
 		data: {
-			page: 1,
+			page: page,
 			contentCount: 20
 		},
 		dataType: "json",
 		success: (response) => {
-			console.log(JSON.stringify(response));
 			getList(response.data);
 		},
 		error: errorMessage	
 	})
 }
 
+for(let i = 0; i < typeSelectBoxListLis.length; i++){
+	
+	typeSelectBoxListLis[i].onclick = () =>{
+	page = 1;
+	for(let i = 0; i < typeSelectBoxListLis.length; i++){
+		if(typeSelectBoxListLis[i].classList.contains("type-selected")){
+		typeSelectBoxListLis[i].classList.remove("type-selected");
+		}
+	}
+	const selectedType = document.querySelector(".selected-type");
+	
+	typeSelectBoxListLis[i].classList.add("type-selected");
+	
+	listType = typeSelectBoxListLis[i].textContent.toLowerCase();
+	
+	selectedType.textContent = typeSelectBoxListLis[i].textContent;
+	
+	todoContentList.innerHTML = '';
+	
+	load();
+	
+	typeSelectBoxList.classList.toggle("visible");
+		
+	}
+}
+
+function setTotalCount(totalCount){
+	totalpage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20 + 1);
+}
+
 function getList(data) {
-	const todoContentList = document.querySelector(".todo-content-list");
+	const incompleteCountNumber = document.querySelector(".incomplete-count-number");
+	incompleteCountNumber.textContent = data[0].incompleteCount;
+	setTotalCount(data[0].totalCount)
 	for(let content of data) {
 		const listContent = `
 			 <li class="todo-content">
