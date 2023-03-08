@@ -7,11 +7,12 @@ const sectionBody = document.querySelector(".section-body");
 let page = 1;
 let totalpage = 0;
 
+
+
 sectionBody.onscroll = () =>{
 	let checkNum = todoContentList.clientHeight - sectionBody.offsetHeight - sectionBody.scrollTop;
 	
 	if(checkNum < 1 && checkNum >-1 && page < totalpage){
-	
 		page++;
 		load();
 	}
@@ -32,7 +33,7 @@ function load(){
 		type: "get",
 		url: `/api/v1/todolist/list/${listType}`,
 		data: {
-			page: page,
+			"page": page,
 			contentCount: 20
 		},
 		dataType: "json",
@@ -70,7 +71,7 @@ for(let i = 0; i < typeSelectBoxListLis.length; i++){
 }
 
 function setTotalCount(totalCount){
-	totalpage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20 + 1);
+	totalpage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20) + 1;
 }
 
 function getList(data) {
@@ -79,24 +80,91 @@ function getList(data) {
 	setTotalCount(data[0].totalCount)
 	for(let content of data) {
 		const listContent = `
-			 <li class="todo-content">
-                       <input type="checkbox" id="complete-check-${content.todoCode}" class="complete-check" ${content.todoComplete ? 'checked' : ''}>
-                       <label for="complete-check-${content.todoCode}"></label>
-                       <div class="todo-content-text">${content.todo}</div>
-                       <input type="text" class="todo-content-input visible" value="${content.todo}">
-                       <input type="checkbox" id="importance-check" class="importance-check" ${content.importance ? 'checked' : ''}>
-                       <label for="importance-check-${content.todoCode}"></label>
-                       <div class="trash-button"><i class="fa-solid fa-trash"></i></div>
-                    </li>
+			<li class="todo-content">
+                <input type="checkbox" id="complete-check-${content.todoCode}" class="complete-check" ${content.todoComplete ? 'checked' : ''}>
+                <label for="complete-check-${content.todoCode}"></label>
+                <div class="todo-content-text">${content.todo}</div>
+                <input type="text" class="todo-content-input visible" value="${content.todo}">
+                <input type="checkbox" id="importance-check-${content.todoCode}" class="importance-check" ${content.importance ? 'checked' : ''}>
+                <label for="importance-check-${content.todoCode}"></label>
+                <div class="trash-button"><i class="fa-solid fa-trash"></i></div>
+            </li>
 		`
 		
 		todoContentList.innerHTML += listContent;
-		document.querySelector(`#complete-check-${content.todoCode}`).checked = content.todoComplete;
-		document.querySelector(`#complete-check-${content.todoCode}`).checked = content.importance;
+		
 	}
-
+	
+	addEvent();
 }
 
+
+function addEvent() {
+	const todoContents = document.querySelectorAll(".todo-content");
+	for(let i = 0; i < todoContents.length; i++){
+		let todoCode = todoContents[i].querySelector(".complete-check").getAttribute("id");
+		let index = todoCode.lastIndexOf("-");
+		todoCode = todoCode.substring(index + 1);
+		
+		todoContents[i].querySelector(".complete-check").onchange = () =>{
+				updateCheckStatus("complete",todoContents[i], todoCode);
+			
+		}
+		
+		todoContents[i].querySelector(".importance-check").onchange = () =>{
+				updateCheckStatus("importance",todoContents[i], todoCode);
+		}	
+		
+		todoContents[i].querySelector(".trash-button").onclick = () =>{
+		
+		}		
+	}
+}
+
+function updateStatus(type, todoCode){
+	result = false;
+	
+	$.ajax({
+		type:"put",
+		url: `/api/v1/todolist/${type}/todo/${todoCode}`,
+		async : false,
+		dataType: "json",
+		success : (response) => {
+			result = response.data
+			
+			
+		},
+		error: errorMessage
+		
+	})
+	return result;
+}
+
+
+function updateCheckStatus(type, todoContent, todoCode) {
+	let result = updateStatus(type, todoCode);
+	
+	if(
+			(
+				(
+					type == "complete" 
+					&& 
+					(listType == "complete" || listType == "incomplete")
+				) 
+				|| 
+				(type == "importance" && listType == "importance")
+			) 
+			&& 
+			result
+		) {
+		todoContentList.removeChild(todoContent);
+	}
+}
+
+
+function deleteTodo(todoContent){
+	
+}
 
 function errorMessage(request, status, error){
 	alert("요청실패");
