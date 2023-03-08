@@ -116,7 +116,7 @@ function addEvent() {
 		}	
 		
 		todoContents[i].querySelector(".trash-button").onclick = () =>{
-		
+			 deleteTodo(todoContents[i], todoCode);
 		}		
 	}
 }
@@ -162,8 +162,19 @@ function updateCheckStatus(type, todoContent, todoCode) {
 }
 
 
-function deleteTodo(todoContent){
-	
+function deleteTodo(todoContent, todoCode){
+	$.ajax({
+		type: "delete",
+		url: `/api/v1/todolist/todo/${todoCode}`,
+		async: false,
+		datatype: "json",
+		success: (response) => {
+			if(response.data){
+				todoContentList.removeChild(todoContent);
+			}
+		},
+		error: errorMessage
+	})
 }
 
 function errorMessage(request, status, error){
